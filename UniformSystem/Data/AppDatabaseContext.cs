@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UniformSystem.Models;
+using Microsoft.EntityFrameworkCore;
+using UniformSystem.Entities;
 
 namespace UniformSystem.Data;
 
