@@ -1,8 +1,10 @@
 ﻿namespace UniformSystem.Exceptions.Users;
 
-public class UserAlreadyExistsException : EntityAlreadyExistsException
+public class UserAlreadyExistsException(
+    string message = UserAlreadyExistsException.DefaultMessage,
+    string target = UserAlreadyExistsException.DefaultTarget)
+    : EntityAlreadyExistsException(message, target)
 {
-    public UserAlreadyExistsException() : base("Este usuário já esta registrado.") { }
-    public UserAlreadyExistsException(string message) : base(message) { }
-    public UserAlreadyExistsException(string message, Exception innerException) : base(message, innerException) { }
+    private const string DefaultMessage = "Este usuário já esta registrado.";
+    private const string DefaultTarget = "global";
 }

@@ -1,8 +1,10 @@
 ﻿namespace UniformSystem.Exceptions.Employees;
 
-public class EmployeeAlreadyExistsException : EntityNotFoundException
+public class EmployeeAlreadyExistsException(
+    string message = EmployeeAlreadyExistsException.DefaultMessage,
+    string target = EmployeeAlreadyExistsException.DefaultTarget)
+    : EntityNotFoundException(message, target)
 {
-    public EmployeeAlreadyExistsException() : base("Esse funcionário não esta registrado.") { }
-    public EmployeeAlreadyExistsException(string message) :  base(message) { }
-    public EmployeeAlreadyExistsException(string message, Exception innerException) : base(message, innerException) { }
+    private const string DefaultMessage = "Não foi possível encontrar esse funcionário.";
+    private const string DefaultTarget = "global";
 }

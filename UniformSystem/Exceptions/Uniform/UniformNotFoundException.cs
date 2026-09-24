@@ -1,8 +1,10 @@
 ﻿namespace UniformSystem.Exceptions.Uniform;
 
-public class UniformNotFoundException : EntityNotFoundException
+public class UniformNotFoundException(
+    string message = UniformNotFoundException.DefaultMessage,
+    string target = UniformNotFoundException.DefaultTarget)
+    : EntityNotFoundException(message, target)
 {
-    public UniformNotFoundException() : base("Uniforme não encontrado.") { }
-    public UniformNotFoundException(string message) :  base(message) { }
-    public UniformNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    private const string DefaultMessage = "Não foi possível encontrar esse uniforme.";
+    private const string DefaultTarget = "global";
 }

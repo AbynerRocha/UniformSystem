@@ -3,38 +3,34 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UniformSystem.Exceptions;
 
-public class GlobalExceptionHandler(ILogger logger) : IExceptionHandler
+public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception,
         CancellationToken cancellationToken)
     {
-        var (status, title, detail) = exception switch
+        var (status, message, target) = exception switch
         {
-            EntityAlreadyExistsException ex => (StatusCodes.Status409Conflict, "Conflito", ex.Message),
-            EntityNotFoundException ex => (StatusCodes.Status404NotFound, "Não encontrado", ex.Message),
-            InvalidOperationException ex => (StatusCodes.Status400BadRequest, "Requisição inválida", ex.Message),
-            ArgumentException ex => (StatusCodes.Status400BadRequest, "Requisição inválida", ex.Message),
-            _ => (StatusCodes.Status500InternalServerError, "Erro interno",
-                "Ocorreu um erro inesperado. Tente novamente mais tarde.")
+            EntityAlreadyExistsException ex => new ErrorResponse(StatusCodes.Status409Conflict, ex.Message, ex.Target),
+            EntityNotFoundException ex => new ErrorResponse(StatusCodes.Status404NotFound, ex.Message, ex.Target),
+            
+            InvalidOperationException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, null),
+            ArgumentException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, null),
+            
+            InvalidParamLengthException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, ex.Target),
+            _ => new ErrorResponse(StatusCodes.Status500InternalServerError, "Ocorreu um erro inesperado. Tente novamente mais tarde.",  null)
         };
         
         if(status == StatusCodes.Status500InternalServerError)
             logger.LogError(exception, "Error not treated");
         else 
-            logger.LogWarning(exception, "Bad request: {ExceptionMessage}", exception.Message);
+            logger.LogWarning(exception, "Request error: {ExceptionMessage}", exception.Message);
         
         httpContext.Response.StatusCode = status;
-
-        var problem = new ProblemDetails
-        {
-            Status = status,
-            Title = title,
-            Detail = detail,
-            Instance = httpContext.Request.Path
-        };
         
-        await httpContext.Response.WriteAsJsonAsync(problem, cancellationToken);
+        await httpContext.Response.WriteAsJsonAsync(new { status, message, target }, cancellationToken);
 
         return true;
     }
 }
+
+public sealed record ErrorResponse(int Status, string Message, string? Target);

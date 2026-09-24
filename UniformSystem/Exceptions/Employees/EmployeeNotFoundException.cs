@@ -1,8 +1,10 @@
 ﻿namespace UniformSystem.Exceptions.Employees;
 
-public class EmployeeNotFoundException : EntityNotFoundException
+public class EmployeeNotFoundException(
+    string message = EmployeeNotFoundException.DefaultMessage,
+    string target = EmployeeNotFoundException.DefaultTarget)
+    : EntityNotFoundException(message, target)
 {
-    public EmployeeNotFoundException() : base("Funcionário não encontrado.") { }
-    public EmployeeNotFoundException(string message) :  base(message) { }
-    public EmployeeNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    private const string DefaultMessage = "Não foi possível encontrar esse funcionário.";
+    private const string DefaultTarget = "global";
 }

@@ -1,8 +1,10 @@
 namespace UniformSystem.Exceptions.Uniform;
 
-public class UniformAlreadyExistsException : EntityAlreadyExistsException
+public class UniformAlreadyExistsException(
+    string message = UniformAlreadyExistsException.DefaultMessage,
+    string target = UniformAlreadyExistsException.DefaultTarget)
+    : EntityAlreadyExistsException(message, target)
 {
-    public UniformAlreadyExistsException() : base("Esse uniforme já existe.") { }
-    public UniformAlreadyExistsException(string message) :  base(message) { }
-    public UniformAlreadyExistsException(string message, Exception innerException) : base(message, innerException) { }
+    private const string DefaultMessage = "Esse uniforme já esta registrado.";
+    private const string DefaultTarget = "global";
 }

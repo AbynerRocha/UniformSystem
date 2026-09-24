@@ -1,8 +1,10 @@
 ﻿namespace UniformSystem.Exceptions.Users;
 
-public class UserNotFoundException : EntityNotFoundException
+public class UserNotFoundException(
+    string message = UserNotFoundException.DefaultMessage,
+    string target = UserNotFoundException.DefaultTarget)
+    : EntityNotFoundException(message, target)
 {
-    public UserNotFoundException() : base("Usuário não encontrado.") { }
-    public UserNotFoundException(string message) :  base(message) { }
-    public UserNotFoundException(string message, Exception innerException) : base(message, innerException) { }
+    private const string DefaultMessage = "Não foi possível encontrar esse usuário.";
+    private const string DefaultTarget = "global";
 }
