@@ -16,6 +16,7 @@ using UniformSystem.Features.Employees.Services;
 using UniformSystem.Features.Permissions.Repositories;
 using UniformSystem.Features.Uniforms.Services;
 using UniformSystem.Features.UniformsDelivered.Repositories;
+using UniformSystem.Features.UniformsDelivered.Services;
 using UniformSystem.Maps;
 using UniformSystem.Security.Permissions;
 
@@ -78,6 +79,7 @@ builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IUniformService, UniformService>();
+builder.Services.AddScoped<IUniformDeliveredService, UniformDeliveredService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

@@ -2,17 +2,26 @@
 using UniformSystem.Entities;
 using UniformSystem.Features.UniformsDelivered.DTOs.Request;
 using UniformSystem.Features.UniformsDelivered.Repositories;
+using UniformSystem.Features.UniformsDelivered.Services;
 
 namespace UniformSystem.Features.UniformsDelivered.Controllers;
 
 [ApiController]
 [Route("/api/[controller]")]
-public class DeliveryController(IUniformDeliveredRepository  repository) : ControllerBase
+public class DeliveryController(IUniformDeliveredService uniformDeliveredService) : ControllerBase
 {
     [HttpGet("{id:int}")]
     public async Task<IActionResult> Get([FromRoute] int id)
     {
-        var response = await repository.GetDeliveryAsync(id);
+        var response = await uniformDeliveredService.GetUniformDelivery(id);
+        
+        return Ok(response);
+    }
+    
+    [HttpGet]
+    public async Task<IActionResult> Get([FromQuery] FilterDeliveredUniformsDto filters)
+    {
+        var response = await uniformDeliveredService.GetUniformDeliveries(filters);
         
         return Ok(response);
     }
@@ -20,9 +29,7 @@ public class DeliveryController(IUniformDeliveredRepository  repository) : Contr
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] DeliveryUniformRequestDto request)
     {
-        DeliveryUniformRequestDto.Validator(request);
-        
-        await repository.SaveDeliveryAsync(request);
+        await uniformDeliveredService.SaveDelivery(request);
 
         return Created();
     }

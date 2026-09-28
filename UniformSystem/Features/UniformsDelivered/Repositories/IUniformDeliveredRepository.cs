@@ -7,8 +7,8 @@ namespace UniformSystem.Features.UniformsDelivered.Repositories;
 public interface IUniformDeliveredRepository
 {
     public Task SaveDeliveryAsync(DeliveryUniformRequestDto delivery);
-    public Task<DeliveryUniformDto?> GetDeliveryAsync(int id);
-    public Task<List<DeliveryUniformDto>> GetAllDeliveriesAsync();
-    public Task<List<DeliveryUniformDto>> GetAllDeliveriesByUserIdAsync(int userId);
-    public Task<List<DeliveryUniformDto>> GetAllDeliveriesToEmployeeIdAsync(int employeeId);
+    public Task<UniformDeliveryDto?> GetDeliveryAsync(int id);
+    public Task<List<UniformDeliveryDto>> GetAllDeliveriesAsync(FilterDeliveredUniformsDto filter);
+    public Task<List<UniformDeliveryDto>> GetAllDeliveriesByUserIdAsync(int userId,  FilterDeliveredUniformsDto filter);
+    public Task<List<UniformDeliveryDto>> GetAllDeliveriesToEmployeeIdAsync(int employeeId, FilterDeliveredUniformsDto filter);
 }

@@ -22,26 +22,68 @@ public class UniformDeliveredRepository(AppDatabaseContext dbContext) : IUniform
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<DeliveryUniformDto?> GetDeliveryAsync(int id)
+    public async Task<UniformDeliveryDto?> GetDeliveryAsync(int id)
     {
         return await dbContext.UniformDelivered
             .AsNoTracking()
             .Where(x => x.Id == id)
-            .ProjectToType<DeliveryUniformDto>()
+            .ProjectToType<UniformDeliveryDto>()
             .FirstOrDefaultAsync();
     }
 
-    public Task<List<DeliveryUniformDto>> GetAllDeliveriesAsync()
+    public async Task<List<UniformDeliveryDto>> GetAllDeliveriesAsync(FilterDeliveredUniformsDto filter)
+    {
+        var query = dbContext.UniformDelivered
+            .AsNoTracking()
+            .AsQueryable();
+
+        if (filter.Sex.HasValue)
+            query = query.Where(d =>
+                d.Uniform != null && d.Uniform.Sex == char.ToUpperInvariant(filter.Sex.Value));
+
+        if (!string.IsNullOrWhiteSpace(filter.Size))
+        {
+            var size = filter.Size.Trim().ToUpperInvariant();
+            query = query.Where(d => d.Uniform != null && d.Uniform.Size == size);
+        }
+
+        if (filter.UniformCategoryId.HasValue)
+            query = query.Where(d =>
+                d.Uniform != null && d.Uniform.UniformCategoryId == filter.UniformCategoryId.Value);
+
+        if (!string.IsNullOrWhiteSpace(filter.Name))
+        {
+            var namePattern = $"%{filter.Name.Trim()}%";
+            query = query.Where(d =>
+                d.Uniform != null && EF.Functions.ILike(d.Uniform.Name, namePattern));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Reference))
+        {
+            var referencePattern = $"%{filter.Reference.Trim()}%";
+            query = query.Where(d =>
+                d.Uniform != null && EF.Functions.ILike(d.Uniform.Reference, referencePattern));
+        }
+
+        var page = Math.Max(filter.Page, 1);
+        var pageSize = Math.Clamp(filter.PageSize, 1, 100);
+
+        return await query
+            .OrderByDescending(d => d.DeliveredAt)
+            .ThenByDescending(d => d.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ProjectToType<UniformDeliveryDto>()
+            .ToListAsync();
+    }
+
+    public Task<List<UniformDeliveryDto>> GetAllDeliveriesByUserIdAsync(int userId, FilterDeliveredUniformsDto filter)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<DeliveryUniformDto>> GetAllDeliveriesByUserIdAsync(int userId)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<DeliveryUniformDto>> GetAllDeliveriesToEmployeeIdAsync(int employeeId)
+    public Task<List<UniformDeliveryDto>> GetAllDeliveriesToEmployeeIdAsync(int employeeId,
+        FilterDeliveredUniformsDto filter)
     {
         throw new NotImplementedException();
     }

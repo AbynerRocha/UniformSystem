@@ -12,6 +12,7 @@ public static class MappingConfig
             .NewConfig()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.Name, src => src.Name)
+            .Map(dest => dest.Reference, src => src.Reference)
             .Map(dest => dest.Size, src => src.Size)
             .Map(dest => dest.Sex, src => src.Sex)
             .Map(dest => dest.Category,
@@ -21,7 +22,7 @@ public static class MappingConfig
                         src.UniformCategory.Id,
                         src.UniformCategory.Name));
 
-        TypeAdapterConfig<UniformDelivered, DeliveryUniformDto>
+        TypeAdapterConfig<UniformDelivered, UniformDeliveryDto>
             .NewConfig()
             .Map(dest => dest.Id, src => src.Id)
             .Map(dest => dest.DeliveredAt, src => src.DeliveredAt)

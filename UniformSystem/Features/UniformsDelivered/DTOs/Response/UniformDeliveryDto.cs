@@ -1,9 +1,9 @@
 ﻿namespace UniformSystem.Features.UniformsDelivered.DTOs.Response;
 
 public record RelatedItemDto(int Id, string Name);
-public record UniformSummaryDto(int Id, string Name, RelatedItemDto? Category,  string Size, char Sex);
+public record UniformSummaryDto(int Id, string Name, string Reference, RelatedItemDto? Category,  string Size, char Sex);
 
-public class DeliveryUniformDto
+public class UniformDeliveryDto
 {
     public int Id { get; init; }
     public DateTime DeliveredAt { get; init; }
