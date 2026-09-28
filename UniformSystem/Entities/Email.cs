@@ -12,7 +12,7 @@ public readonly struct Email
         this.Value = value;
     }
 
-    private bool ValidateEmail(string email)
+    public static bool ValidateEmail(string email)
     {
         var trimmedEmail = email.Trim();
 

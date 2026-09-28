@@ -22,6 +22,7 @@ public class AppDatabaseContext(IConfiguration configuration, DbContextOptions o
     }
     
     public DbSet<User> Users  => Set<User>();
+    public DbSet<Permission> Permissions  => Set<Permission>();
     public DbSet<Uniform> Uniforms  => Set<Uniform>();
     public DbSet<Employee> Employees  => Set<Employee>();
     public DbSet<Inventory> Inventory  => Set<Inventory>();

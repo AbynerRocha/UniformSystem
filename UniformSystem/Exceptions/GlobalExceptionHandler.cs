@@ -16,7 +16,7 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             InvalidOperationException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, null),
             ArgumentException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, null),
             
-            InvalidParamLengthException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, ex.Target),
+            ParamException ex => new ErrorResponse(StatusCodes.Status400BadRequest, ex.Message, ex.Target),
             _ => new ErrorResponse(StatusCodes.Status500InternalServerError, "Ocorreu um erro inesperado. Tente novamente mais tarde.",  null)
         };
         

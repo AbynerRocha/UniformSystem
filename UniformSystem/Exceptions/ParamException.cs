@@ -1,4 +1,6 @@
-﻿namespace UniformSystem.Exceptions;
+﻿using UniformSystem.Constants;
+
+namespace UniformSystem.Exceptions;
 
 public class ParamException(string message, string target) : Exception(message)
 {
