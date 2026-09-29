@@ -1,8 +1,7 @@
 ﻿using UniformSystem.Constants;
 using UniformSystem.Exceptions;
-using UniformSystem.Features.Uniforms.DTOs;
 
-namespace UniformSystem.Features.UniformsDelivered.DTOs.Request;
+namespace UniformSystem.Features.UniformsDelivered.DTOs;
 
 public class DeliveryUniformRequestDto
 {

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UniformSystem.Entities;
-using UniformSystem.Features.UniformsDelivered.DTOs.Request;
-using UniformSystem.Features.UniformsDelivered.Repositories;
+using UniformSystem.Features.UniformsDelivered.DTOs;
 using UniformSystem.Features.UniformsDelivered.Services;
 
 namespace UniformSystem.Features.UniformsDelivered.Controllers;

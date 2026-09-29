@@ -1,6 +1,5 @@
 ﻿using UniformSystem.Entities;
-using UniformSystem.Features.UniformsDelivered.DTOs.Request;
-using UniformSystem.Features.UniformsDelivered.DTOs.Response;
+using UniformSystem.Features.UniformsDelivered.DTOs;
 
 namespace UniformSystem.Features.UniformsDelivered.Repositories;
 

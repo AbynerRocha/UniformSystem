@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace UniformSystem.Features.UniformsDelivered.DTOs.Request;
+namespace UniformSystem.Features.UniformsDelivered.DTOs;
 
 public class FilterDeliveredUniformsDto
 {

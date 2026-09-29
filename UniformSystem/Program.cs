@@ -13,6 +13,8 @@ using UniformSystem.Features.Uniforms.Repositories;
 using UniformSystem.Security;
 using UniformSystem.Features.Users.Services;
 using UniformSystem.Features.Employees.Services;
+using UniformSystem.Features.Inventory.Repositories;
+using UniformSystem.Features.Inventory.Services;
 using UniformSystem.Features.Permissions.Repositories;
 using UniformSystem.Features.Uniforms.Services;
 using UniformSystem.Features.UniformsDelivered.Repositories;
@@ -70,16 +72,18 @@ builder.Services.AddSingleton(TypeAdapterConfig.GlobalSettings);
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IUniformRepository, UniformRepository>();
 builder.Services.AddScoped<IUniformDeliveredRepository, UniformDeliveredRepository>();
-builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IUniformService, UniformService>();
 builder.Services.AddScoped<IUniformDeliveredService, UniformDeliveredService>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

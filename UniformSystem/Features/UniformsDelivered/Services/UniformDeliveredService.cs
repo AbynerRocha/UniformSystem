@@ -1,6 +1,5 @@
 ﻿using UniformSystem.Exceptions.Users;
-using UniformSystem.Features.UniformsDelivered.DTOs.Request;
-using UniformSystem.Features.UniformsDelivered.DTOs.Response;
+using UniformSystem.Features.UniformsDelivered.DTOs;
 using UniformSystem.Features.UniformsDelivered.Repositories;
 
 namespace UniformSystem.Features.UniformsDelivered.Services;
