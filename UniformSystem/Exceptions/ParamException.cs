@@ -2,8 +2,8 @@
 
 namespace UniformSystem.Exceptions;
 
-public class ParamException(string message, string target) : Exception(message)
+public class ParamException(string title, string message, string target) : Exception(message)
 {
-    public string Error { get; } = message;
+    public string Title { get; } = title;
     public string Target { get; } = target;
 }

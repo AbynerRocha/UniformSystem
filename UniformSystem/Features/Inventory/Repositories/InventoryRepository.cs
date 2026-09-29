@@ -40,4 +40,22 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
         dbContext.Update(data);
         await dbContext.SaveChangesAsync();
     }
+
+    public async Task<int?> GetStockFromUniform(int uniformId)
+    {
+        return await dbContext.Inventory
+            .AsNoTracking()
+            .Where(i => i.UniformId == uniformId)
+            .Select(i => (int?)i.Amount)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<int?> GetStockFromUniform(string uniformReference)
+    {
+        return await dbContext.Inventory
+            .AsNoTracking()
+            .Where(i => i.Uniform!.Reference == uniformReference)
+            .Select(i => (int?)i.Amount)
+            .FirstOrDefaultAsync();
+    }
 }

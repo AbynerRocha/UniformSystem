@@ -1,5 +1,5 @@
 ﻿namespace UniformSystem.Exceptions;
 
-public class InvalidParamException(string message, string target) : ParamException(message, target)
+public class InvalidParamException(string message, string target, string title="INVALID_PARAM") : ParamException(title, message, target)
 {
 }

@@ -1,10 +1,12 @@
-﻿using UniformSystem.Exceptions.Users;
+﻿using UniformSystem.Exceptions.Inventory;
+using UniformSystem.Exceptions.Users;
+using UniformSystem.Features.Inventory.Services;
 using UniformSystem.Features.UniformsDelivered.DTOs;
 using UniformSystem.Features.UniformsDelivered.Repositories;
 
 namespace UniformSystem.Features.UniformsDelivered.Services;
 
-public class UniformDeliveredService(IUniformDeliveredRepository repository) : IUniformDeliveredService
+public class UniformDeliveredService(IUniformDeliveredRepository repository, IInventoryService inventoryService) : IUniformDeliveredService
 {
     public async Task<UniformDeliveryDto> GetUniformDelivery(int id)
     {
@@ -24,6 +26,11 @@ public class UniformDeliveredService(IUniformDeliveredRepository repository) : I
     public async Task SaveDelivery(DeliveryUniformRequestDto dto)
     {
         DeliveryUniformRequestDto.Validator(dto);
+
+        var stock = await inventoryService.GetStockFromUniform(dto.UniformId);
+
+        if (stock < dto.Amount)
+            throw new InsufficientStockException();
         
         await repository.SaveDeliveryAsync(dto);
     }

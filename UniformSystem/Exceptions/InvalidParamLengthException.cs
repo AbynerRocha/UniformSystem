@@ -2,6 +2,7 @@
 
 public class InvalidParamLengthException(
     string message,
-    string target) : ParamException(message, target)
+    string target,
+    string title="INVALID_PARAM") : ParamException(title, message, target)
 {
 }
