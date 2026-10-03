@@ -72,18 +72,23 @@ builder.Services.AddSingleton(TypeAdapterConfig.GlobalSettings);
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IUniformRepository, UniformRepository>();
 builder.Services.AddScoped<IUniformDeliveredRepository, UniformDeliveredRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IInventoryLogsRepository, InventoryLogsRepository>();
+
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IUniformService, UniformService>();
 builder.Services.AddScoped<IUniformDeliveredService, UniformDeliveredService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
+builder.Services.AddScoped<IInventoryLogsService, InventoryLogsService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

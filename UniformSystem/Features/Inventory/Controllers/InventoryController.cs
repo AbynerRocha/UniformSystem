@@ -14,18 +14,4 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
         var data = await inventoryService.GetAllAsync(filter);
         return Ok(data);
     }
-
-    [HttpPost]
-    public async Task<IActionResult> Add([FromBody] AddInventoryDto data)
-    {
-        await inventoryService.AddAsync(data);
-        return Created();
-    }
-
-    [HttpPut]
-    public async Task<IActionResult> Update([FromBody] UpdateInventoryDto data)
-    {
-        await inventoryService.UpdateAsync(data);
-        return Ok();
-    }
 }

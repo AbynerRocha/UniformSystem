@@ -5,10 +5,11 @@ namespace UniformSystem.Features.Inventory.DTOs;
 
 public class AddInventoryDto
 {
-    public int UniformId { get; set; }
-    public int Amount { get; set; }
-    public int UpdatedById { get; set; }
-    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+    public int UniformId { get; init; }
+    public int Amount { get; init; }
+    public int UpdatedById { get; init; }
+    public int MinAmount { get; init; }
+    public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
     public static void Validator(AddInventoryDto data)
     {

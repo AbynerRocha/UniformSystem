@@ -12,6 +12,7 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
         await dbContext.Inventory.AddAsync(new Entities.Inventory
         {
             Amount = data.Amount,
+            MinAmount = data.MinAmount,
             UniformId = data.UniformId,
             UpdatedById = data.UpdatedById,
             UpdatedAt = data.UpdatedAt
@@ -41,7 +42,7 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<int?> GetStockFromUniform(int uniformId)
+    public async Task<int?> GetStockFromUniformAsync(int uniformId)
     {
         return await dbContext.Inventory
             .AsNoTracking()
@@ -50,12 +51,34 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
             .FirstOrDefaultAsync();
     }
 
-    public async Task<int?> GetStockFromUniform(string uniformReference)
+    public async Task<int?> GetStockFromUniformAsync(string uniformReference)
     {
         return await dbContext.Inventory
             .AsNoTracking()
             .Where(i => i.Uniform!.Reference == uniformReference)
             .Select(i => (int?)i.Amount)
             .FirstOrDefaultAsync();
+    }
+
+    public async Task<bool> TryDecreaseStockFromUniformAsync(int uniformId, int amount)
+    {
+        var affectedRows = await dbContext.Inventory
+            .Where(i => i.UniformId == uniformId && i.Amount >= amount)
+            .ExecuteUpdateAsync(s => 
+                s.SetProperty(i => i.Amount, i => i.Amount - amount));
+
+        return affectedRows == 1;
+    }
+
+    public async Task<int> UpdateStockAsync(int uniformId, int amount)
+    {
+        var updatedStock = await dbContext.Inventory
+            .Where(i => i.UniformId == uniformId)
+            .ExecuteUpdateAsync(s => 
+                s.SetProperty(i => i.Amount, amount));
+
+        await dbContext.SaveChangesAsync();
+        
+        return updatedStock;
     }
 }

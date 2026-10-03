@@ -85,6 +85,10 @@ namespace UniformSystem.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("amount");
 
+                    b.Property<int>("MinAmount")
+                        .HasColumnType("integer")
+                        .HasColumnName("min_amount");
+
                     b.Property<int>("UniformId")
                         .HasColumnType("integer")
                         .HasColumnName("uniform_id");

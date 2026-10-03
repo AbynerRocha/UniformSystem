@@ -1,3 +1,3 @@
 namespace UniformSystem.Exceptions;
 
-public class EntityAlreadyExistsException(string message, string target, string title) : EntityException(title, message, target);
+public class EntityAlreadyExistsException(string title, string message, string target) : EntityException(title, message, target);
