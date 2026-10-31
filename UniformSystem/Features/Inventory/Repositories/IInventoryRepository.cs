@@ -6,7 +6,7 @@ public interface IInventoryRepository
 {
     public Task AddAsync(AddInventoryDto data);
     public Task<IEnumerable<InventoryDto>> GetAllAsync(FilterInventoryDto filter);
-    public Task UpdateAsync(UpdateInventoryDto data);
+    public Task<bool> UpdateAsync(UpdateInventoryDto data);
     
     public Task<int?> GetStockFromUniformAsync(int uniformId);
     public Task<int?> GetStockFromUniformAsync(string uniformReference);

@@ -12,7 +12,6 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
         await dbContext.Inventory.AddAsync(new Entities.Inventory
         {
             Amount = data.Amount,
-            MinAmount = data.MinAmount,
             UniformId = data.UniformId,
             UpdatedById = data.UpdatedById,
             UpdatedAt = data.UpdatedAt
@@ -36,10 +35,25 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
             .ToListAsync();
     }
 
-    public async Task UpdateAsync(UpdateInventoryDto data)
+    public async Task<bool> UpdateAsync(UpdateInventoryDto data)
     {
-        dbContext.Update(data);
-        await dbContext.SaveChangesAsync();
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
+        
+        var inventoryUpdated = await dbContext.Inventory
+            .Where(i => i.UniformId == data.UniformId)
+            .ExecuteUpdateAsync(u =>
+                u.SetProperty(i => i.Amount, data.Amount)
+                    .SetProperty(i => i.UpdatedById, data.UpdatedById)
+                    .SetProperty(i => i.UpdatedAt, DateTime.UtcNow)
+            );
+
+        if (inventoryUpdated == 0)
+        {
+            await transaction.RollbackAsync();
+            return false;
+        }
+        
+        return true;
     }
 
     public async Task<int?> GetStockFromUniformAsync(int uniformId)
@@ -64,7 +78,7 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
     {
         var affectedRows = await dbContext.Inventory
             .Where(i => i.UniformId == uniformId && i.Amount >= amount)
-            .ExecuteUpdateAsync(s => 
+            .ExecuteUpdateAsync(s =>
                 s.SetProperty(i => i.Amount, i => i.Amount - amount));
 
         return affectedRows == 1;
@@ -74,11 +88,11 @@ public class InventoryRepository(AppDatabaseContext dbContext) : IInventoryRepos
     {
         var updatedStock = await dbContext.Inventory
             .Where(i => i.UniformId == uniformId)
-            .ExecuteUpdateAsync(s => 
+            .ExecuteUpdateAsync(s =>
                 s.SetProperty(i => i.Amount, amount));
 
         await dbContext.SaveChangesAsync();
-        
+
         return updatedStock;
     }
 }

@@ -16,6 +16,8 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IE
             EntityAlreadyExistsException ex => new ErrorResponse(StatusCodes.Status409Conflict,ex.Title, ex.Message, ex.Target),
             EntityNotFoundException ex => new ErrorResponse(StatusCodes.Status404NotFound, ex.Title, ex.Message, ex.Target),
             
+            InvalidCredentialsException ex => new ErrorResponse(StatusCodes.Status401Unauthorized, ex.Title, ex.Message, ex.Target),
+            
             InsufficientStockException ex => new ErrorResponse(StatusCodes.Status422UnprocessableEntity, ex.Title, ex.Message, ex.Target),
             
             InvalidOperationException ex => new ErrorResponse(StatusCodes.Status400BadRequest, "BAD_REQUEST", ex.Message, null),

@@ -7,6 +7,7 @@ using Scalar.AspNetCore;
 using UniformSystem.Data;
 using UniformSystem.Entities;
 using UniformSystem.Exceptions;
+using UniformSystem.Features.Auth.Services;
 using UniformSystem.Features.Users.Repositories;
 using UniformSystem.Features.Employees.Repositories;
 using UniformSystem.Features.Uniforms.Repositories;
@@ -15,7 +16,11 @@ using UniformSystem.Features.Users.Services;
 using UniformSystem.Features.Employees.Services;
 using UniformSystem.Features.Inventory.Repositories;
 using UniformSystem.Features.Inventory.Services;
+using UniformSystem.Features.Jwt.Services;
 using UniformSystem.Features.Permissions.Repositories;
+using UniformSystem.Features.Permissions;
+using UniformSystem.Features.Tokens.Repositories;
+using UniformSystem.Features.Tokens.Services;
 using UniformSystem.Features.Uniforms.Services;
 using UniformSystem.Features.UniformsDelivered.Repositories;
 using UniformSystem.Features.UniformsDelivered.Services;
@@ -56,7 +61,16 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("user.create", policy => policy.Requirements.Add(new PermissionRequirement("user.create")));
+    options.AddPolicy("inventory.read", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.InventoryRead)));
+    options.AddPolicy("delivery.read", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.DeliveryRead)));
+    
+    options.AddPolicy("inventory.update", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.InventoryUpdate)));
+    options.AddPolicy("delivery.update", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.DeliveryUpdate)));
+    
+    options.AddPolicy("delivery.create", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.DeliveryCreate)));
+    
+    options.AddPolicy("users.manage", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.UsersManage)));
+    options.AddPolicy("uniform.manage", policy => policy.Requirements.Add(new PermissionRequirement(PermissionCatalog.UniformManage)));
 });
 
 builder.Services.AddOpenApi();
@@ -67,6 +81,7 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddDbContext<AppDatabaseContext>();
 builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddSingleton<JwtService>();
 
 builder.Services.AddSingleton(TypeAdapterConfig.GlobalSettings);
 
@@ -81,7 +96,7 @@ builder.Services.AddScoped<IUniformRepository, UniformRepository>();
 builder.Services.AddScoped<IUniformDeliveredRepository, UniformDeliveredRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IInventoryLogsRepository, InventoryLogsRepository>();
-
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -89,6 +104,8 @@ builder.Services.AddScoped<IUniformService, UniformService>();
 builder.Services.AddScoped<IUniformDeliveredService, UniformDeliveredService>();
 builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<IInventoryLogsService, InventoryLogsService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

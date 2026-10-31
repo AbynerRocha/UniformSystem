@@ -22,9 +22,9 @@ public static class FieldLimits
 
     public static class Uniform
     {
-        public const int NameMaxLength = 255;
-        public const int CategoryNameMaxLength = 255;
-        public const int ReferenceMaxLength = 100;
+        public const int NameMaxLength = 120;
+        public const int CategoryNameMaxLength = 120;
+        public const int ReferenceMaxLength = 50;
         public const int ReferenceMinLength = 3;
         public const int SizeMaxLength = 4;
         public const int SexMaxLength = 1;

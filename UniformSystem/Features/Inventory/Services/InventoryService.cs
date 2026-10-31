@@ -1,4 +1,5 @@
 ﻿using UniformSystem.Constants;
+using UniformSystem.Data;
 using UniformSystem.Exceptions;
 using UniformSystem.Exceptions.Inventory;
 using UniformSystem.Exceptions.Uniform;
@@ -9,7 +10,10 @@ using UniformSystem.Features.Uniforms.Services;
 
 namespace UniformSystem.Features.Inventory.Services;
 
-public class InventoryService(IInventoryRepository inventoryRepository, IInventoryLogsService logsService) : IInventoryService
+public class InventoryService(
+    IInventoryRepository inventoryRepository,
+    IInventoryLogsService logsService,
+    IUnitOfWork unitOfWork) : IInventoryService
 {
     public async Task<IEnumerable<InventoryDto>> GetAllAsync(FilterInventoryDto filter)
     {
@@ -19,49 +23,62 @@ public class InventoryService(IInventoryRepository inventoryRepository, IInvento
     public async Task AddAsync(AddInventoryDto data)
     {
         AddInventoryDto.Validator(data);
-        
+
         await inventoryRepository.AddAsync(data);
     }
 
     public async Task UpdateAsync(UpdateInventoryDto data)
     {
         UpdateInventoryDto.Validator(data);
-
-        await inventoryRepository.UpdateAsync(data);
-        await logsService.RegisterLogAsync(new AddInventoryLogDto
+        
+        await unitOfWork.ExecuteTransactionAsync(async () =>
         {
-            UniformId = data.UniformId,
-            Amount = data.Amount,
-            UpdatedAt = DateTime.UtcNow,
-            UpdatedById = data.UpdatedById
+            var updated = await inventoryRepository.UpdateAsync(data);
+
+            if (updated == false)
+                throw new InventoryItemNotFoundException("Inventário ou uniforme não encontrado.", ExceptionsTargets.Global);
+
+            if (data.Amount.HasValue)
+            {
+                await logsService.RegisterLogAsync(new AddInventoryLogDto
+                {
+                    UniformId = data.UniformId,
+                    Amount = data.Amount.Value,
+                    UpdatedAt = DateTime.UtcNow,
+                    UpdatedById = data.UpdatedById
+                });
+            }
         });
+
     }
-    
+
     public async Task<int> GetStockFromUniformAsync(int uniformId)
     {
         if (uniformId <= 0)
             throw new InvalidParamException("Uniforme inválido", ExceptionsTargets.Global);
-        
+
         var stock = await inventoryRepository.GetStockFromUniformAsync(uniformId);
 
-        return stock ?? throw new InventoryItemNotFoundException("Este item não esta registrado", ExceptionsTargets.Global);
+        return stock ??
+               throw new InventoryItemNotFoundException("Este item não esta registrado", ExceptionsTargets.Global);
     }
 
     public async Task<int> GetStockFromUniformAsync(string uniformReference)
     {
-        if(string.IsNullOrWhiteSpace(uniformReference))
+        if (string.IsNullOrWhiteSpace(uniformReference))
             throw new InvalidParamException("Referência inválido", ExceptionsTargets.Global);
-        
+
         var stock = await inventoryRepository.GetStockFromUniformAsync(uniformReference);
 
-        return stock ?? throw new InventoryItemNotFoundException("Este item não esta registrado", ExceptionsTargets.Global);
+        return stock ??
+               throw new InventoryItemNotFoundException("Este item não esta registrado", ExceptionsTargets.Global);
     }
 
     public async Task<bool> TryDecreaseStockFromUniformAsync(int uniformId, int amount)
     {
         if (amount <= 0)
             throw new InvalidParamException("Quantidade inválida", ExceptionsTargets.Global);
-        
+
         return await inventoryRepository.TryDecreaseStockFromUniformAsync(uniformId, amount);
     }
 
@@ -69,10 +86,10 @@ public class InventoryService(IInventoryRepository inventoryRepository, IInvento
     {
         if (uniformId <= 0)
             throw new InvalidParamException("Uniforme inválido.", ExceptionsTargets.Global);
-        
+
         var stock = await GetStockFromUniformAsync(uniformId);
-        var stockUpdated = stock-amount;
-        
+        var stockUpdated = stock - amount;
+
         await inventoryRepository.UpdateStockAsync(uniformId, stockUpdated);
         await logsService.RegisterLogAsync(new AddInventoryLogDto
         {

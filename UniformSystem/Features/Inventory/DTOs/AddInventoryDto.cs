@@ -8,7 +8,6 @@ public class AddInventoryDto
     public int UniformId { get; init; }
     public int Amount { get; init; }
     public int UpdatedById { get; init; }
-    public int MinAmount { get; init; }
     public DateTime UpdatedAt { get; init; } = DateTime.UtcNow;
 
     public static void Validator(AddInventoryDto data)

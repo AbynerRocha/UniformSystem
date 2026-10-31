@@ -85,10 +85,6 @@ namespace UniformSystem.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("amount");
 
-                    b.Property<int>("MinAmount")
-                        .HasColumnType("integer")
-                        .HasColumnName("min_amount");
-
                     b.Property<int>("UniformId")
                         .HasColumnType("integer")
                         .HasColumnName("uniform_id");
@@ -185,6 +181,42 @@ namespace UniformSystem.Migrations
                     b.ToTable("permissions", (string)null);
                 });
 
+            modelBuilder.Entity("UniformSystem.Entities.Token", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("token_revoked");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("integer")
+                        .HasColumnName("token_type");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("token");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tb_tokens");
+
+                    b.HasIndex("Value")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tb_tokens_token");
+
+                    b.ToTable("tb_tokens", (string)null);
+                });
+
             modelBuilder.Entity("UniformSystem.Entities.Uniform", b =>
                 {
                     b.Property<int>("Id")
@@ -194,16 +226,20 @@ namespace UniformSystem.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("MinAmount")
+                        .HasColumnType("integer")
+                        .HasColumnName("min_amount");
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
                         .HasColumnName("name");
 
                     b.Property<string>("Reference")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("reference");
 
                     b.Property<char>("Sex")
@@ -251,8 +287,8 @@ namespace UniformSystem.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
                         .HasColumnName("name");
 
                     b.HasKey("Id")
